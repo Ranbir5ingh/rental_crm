@@ -27,9 +27,9 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarProvider,
   SidebarTrigger,
   SidebarInset,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { useSupabase } from "@/services/supabase/supabase.hook";
 
@@ -41,10 +41,10 @@ interface NavItem {
 
 export function DashboardSidebar({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
   const { toast } = useToast();
   const router = useRouter();
   const { logout } = useSupabase();
-  const [open, setOpen] = useState(true);
 
   // Track window size to determine if we're on mobile
   const [isMobile, setIsMobile] = useState(false);
@@ -93,13 +93,12 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
   const handleNavigation = () => {
     // Close sidebar on mobile when navigating
     if (isMobile) {
-      setOpen(false);
-      console.log("hello")
+      setOpenMobile(false);
     }
   };
 
   return (
-    <SidebarProvider onOpenChange={setOpen} open={open}>
+    <>
       <Sidebar className="border-r">
         <SidebarHeader className="px-6 py-4 border-b">
           <div className="flex items-center gap-3">
@@ -177,6 +176,6 @@ export function DashboardSidebar({ children }: { children: React.ReactNode }) {
         </header>
         <main className="flex-1 overflow-auto">{children}</main>
       </SidebarInset>
-    </SidebarProvider>
+      </>
   );
 }

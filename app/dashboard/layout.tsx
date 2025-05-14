@@ -2,6 +2,7 @@
 import type React from "react";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { useSupabase } from "@/services/supabase/supabase.hook";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
@@ -16,6 +17,9 @@ export default function DashboardLayout({
 
   if (isLoading || !authorised) return <p>Loading</p>;
   return (
+    <SidebarProvider defaultOpen={true}>
+
+    
     <DashboardSidebar>
       <div className="flex min-h-screen flex-col ">
         <div className="flex flex-col  h-full">
@@ -25,5 +29,6 @@ export default function DashboardLayout({
         </div>
       </div>
     </DashboardSidebar>
+    </SidebarProvider>
   );
 }
