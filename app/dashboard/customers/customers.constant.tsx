@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Eye, Mail, Phone, User, UserRoundPen } from "lucide-react";
-import { CreateCustomerForm } from "./partials/create-cutomer-form";
+import  CreateCustomerForm  from "./partials/create-cutomer-form";
 import {
   Dialog,
   DialogContent,

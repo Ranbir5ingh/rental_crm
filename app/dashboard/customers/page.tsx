@@ -5,7 +5,7 @@ import { createCustomer, fetchCustomers } from "./customer.api";
 import { useAxios } from "@/services/axios/axios.hook";
 import React from "react";
 import { CustomerDataCol } from "./customers.constant";
-import { CreateCustomerForm } from "./partials/create-cutomer-form";
+import  CreateCustomerForm  from "./partials/create-cutomer-form";
 import { toast } from "react-toastify";
 import { CreateCustomerDto } from "./customer.schema";
 

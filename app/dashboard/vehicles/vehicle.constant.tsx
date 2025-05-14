@@ -13,7 +13,7 @@ import {
 import { useAxios } from "@/services/axios/axios.hook";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { CreateVehicleForm } from "./partials/create-vehicle-form";
+import  CreateVehicleForm from "./partials/create-vehicle-form";
 import { CreateVehicleDto } from "./vehicle.schema";
 import { updateVehicle } from "./vehicle.api";
 import { VehicleInfoDisplay } from "./partials/view-vehicle";

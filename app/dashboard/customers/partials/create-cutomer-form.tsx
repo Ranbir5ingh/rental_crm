@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useTransition, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User, Loader } from "lucide-react";
@@ -24,9 +25,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { CreateCustomerDto, CreateCustomerSchema } from "../customer.schema";
-import { useState, useTransition } from "react";
 import FileUploadPlaceholder from "@/components/file-upload-placeholder";
-import Image from "next/image";
 
 interface AddCustomerDialogBoxProps {
   initialData?: CreateCustomerDto & { image: string };
@@ -35,7 +34,7 @@ interface AddCustomerDialogBoxProps {
   title: string;
 }
 
-export function CreateCustomerForm({
+function CreateCustomerForm({
   initialData,
   onSubmit,
   submitLabel,
@@ -48,6 +47,61 @@ export function CreateCustomerForm({
   const [aadharFront, setAadharFront] = useState<File | null>(null);
   const [aadharBack, setAadharBack] = useState<File | null>(null);
   const [drivingLic, setDrivingLic] = useState<File | null>(null);
+
+  const handleSubmit = useCallback(
+    async (data: CreateCustomerDto) => {
+      startTransition(async () => {
+        if (profile) data.profile = profile;
+        if (aadharFront) data.aadharFront = aadharFront;
+        if (aadharBack) data.aadharBack = aadharBack;
+        if (drivingLic) data.drivingLic = drivingLic;
+
+        await onSubmit(data);
+      });
+    },
+    [profile, aadharFront, aadharBack, drivingLic, onSubmit, startTransition]
+  );
+
+  const handleProfileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setProfile(file);
+      }
+    },
+    []
+  );
+
+  const handleAadharFrontChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setAadharFront(file);
+      }
+    },
+    []
+  );
+
+  const handleAadharBackChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setAadharBack(file);
+      }
+    },
+    []
+  );
+
+  const handleDrivingLicChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setDrivingLic(file);
+      }
+    },
+    []
+  );
+
   const form = useForm<CreateCustomerDto>({
     resolver: zodResolver(CreateCustomerSchema),
     defaultValues: initialData
@@ -68,28 +122,13 @@ export function CreateCustomerForm({
     mode: "onChange",
   });
 
-  async function handleSubmit(data: CreateCustomerDto) {
-    startTransition(async () => {
-      if (profile) data.profile = profile;
-      if (aadharFront) data.aadharFront = aadharFront;
-      if (aadharBack) data.aadharBack = aadharBack;
-      if (drivingLic) data.drivingLic = drivingLic;
-
-      await onSubmit(data);
-    });
-  }
-
-
   return (
     <div className="w-full mx-auto p-4 md:p-6 lg:p-10 bg-white text-black rounded-lg">
       <h2 className="text-xl font-semibold mb-6 border-b-2 border-gray-500 pb-2">
         {title}
       </h2>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20">
             <div className="space-y-6">
               <FormField
@@ -120,12 +159,7 @@ export function CreateCustomerForm({
                           type="file"
                           className="hidden"
                           accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              setProfile(file);
-                            }
-                          }}
+                          onChange={handleProfileChange}
                         />
                       </label>
                     </FormControl>
@@ -350,12 +384,7 @@ export function CreateCustomerForm({
                               type="file"
                               className="hidden"
                               accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  setAadharFront(file);
-                                }
-                              }}
+                              onChange={handleAadharFrontChange}
                             />
                           </div>
                         </label>
@@ -396,12 +425,7 @@ export function CreateCustomerForm({
                               type="file"
                               className="hidden"
                               accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  setAadharBack(file);
-                                }
-                              }}
+                              onChange={handleAadharBackChange}
                             />
                           </div>
                         </label>
@@ -443,12 +467,7 @@ export function CreateCustomerForm({
                             type="file"
                             className="hidden"
                             accept="image/*"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                setDrivingLic(file);
-                              }
-                            }}
+                            onChange={handleDrivingLicChange}
                           />
                         </div>
                       </label>
@@ -481,3 +500,5 @@ export function CreateCustomerForm({
     </div>
   );
 }
+
+export default React.memo(CreateCustomerForm);

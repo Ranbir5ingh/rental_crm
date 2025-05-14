@@ -1,4 +1,5 @@
 "use client";
+import React, { useState, useCallback, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,6 @@ import { addExpense, getAllTransactions, getStatistics } from "./finance.api";
 import { useAxios } from "@/services/axios/axios.hook";
 import { RecentTransaction } from "./finance.constants";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { requestData } from "./finance.types";
 import RevenueChart from "./partials/revenue-chart";
 import FinancePageSkeleton from "./partials/finance-skelaten";
@@ -28,7 +28,7 @@ import { toast } from "react-toastify";
 
 export default function Finance() {
   const [statsData, setStatsData] = useState<requestData | null>(null);
-  const [openExpenseCreatediolog, setOpenExpenseCreatediolog] = useState(false);
+  const [openExpenseCreateDialog, setOpenExpenseCreateDialog] = useState(false);
 
   const { axios } = useAxios();
   const {
@@ -46,31 +46,31 @@ export default function Finance() {
 
   useEffect(() => {
     refetchDashboardData();
-  }, []);
+  }, [refetchDashboardData]);
+
+  const createExpenseDialog = useCallback(
+    ({ refetch: refetchTransactions }: { refetch: any }) => {
+      const handleSubmit = async (data: expenseDto) => {
+        try {
+          const response = await addExpense(data, axios);
+          if (response) {
+            toast.success("Expense Added successfully");
+          }
+        } catch (error: any) {
+          toast.error("Something went wrong");
+        } finally {
+          refetchTransactions();
+          refetchDashboardData();
+          setOpenExpenseCreateDialog(false);
+        }
+      };
+
+      return <AddExpenserForm onSubmit={handleSubmit} title="Add Expense" />;
+    },
+    [axios, refetchDashboardData]
+  );
 
   if (isFetching) return <FinancePageSkeleton />;
-
-  function createExpenseDialog({
-    refetch: refechTransactions,
-  }: {
-    refetch: any;
-  }) {
-    async function handleSubmit(data: expenseDto) {
-      try {
-        const response = await addExpense(data, axios);
-        if (response) {
-          toast.success("Expense Added successfully");
-        }
-      } catch (error: any) {
-        toast.error("Something went wrong");
-      } finally {
-        refechTransactions();
-        refetchDashboardData();
-        setOpenExpenseCreatediolog(false);
-      }
-    }
-    return <AddExpenserForm onSubmit={handleSubmit} title="Add Expense" />;
-  }
 
   return (
     <div className="flex flex-col p-4 md:p-10 space-y-6 w-full">
@@ -97,8 +97,8 @@ export default function Finance() {
         title="Expense"
         queryKey={["transactions"]}
         CreateEntryComponent={createExpenseDialog}
-        createEntryDialogOpen={openExpenseCreatediolog}
-        setCreateEntryDialogOpen={setOpenExpenseCreatediolog}
+        createEntryDialogOpen={openExpenseCreateDialog}
+        setCreateEntryDialogOpen={setOpenExpenseCreateDialog}
       />
     </div>
   );
