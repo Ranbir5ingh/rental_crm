@@ -428,7 +428,7 @@ export function CreateVehicleForm({
                   render={({ field }) => (
                     <FormItem className="sm:col-span-2 lg:col-span-1">
                       <FormLabel>
-                        <p className="font-bold text-base sm:text-lg">Last Service date</p>
+                        <p className="font-bold text-base sm:text-lg">Last Serviced</p>
                         <FormControl>
                           <Input
                             type="date"
@@ -462,7 +462,7 @@ export function CreateVehicleForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-bold text-base sm:text-lg">
-                        Upload Car Photo
+                        Car Photo
                       </FormLabel>
 
                       <FormControl>
@@ -508,7 +508,7 @@ export function CreateVehicleForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-bold text-base sm:text-lg">
-                        Upload Registration Photo
+                        Registration Photo
                       </FormLabel>
 
                       <FormControl>
