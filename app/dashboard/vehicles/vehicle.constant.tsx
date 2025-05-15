@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Edit, Eye, Mail, Phone, SquarePen, User, UserRoundPen } from "lucide-react";
+import { Edit, Eye, Mail, Phone, SquarePen, Trash, User, UserRoundPen } from "lucide-react";
 
 import {
   Dialog,
@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import  CreateVehicleForm from "./partials/create-vehicle-form";
 import { CreateVehicleDto } from "./vehicle.schema";
-import { updateVehicle } from "./vehicle.api";
+import { updateVehicle, deleteVehicle } from "./vehicle.api";
 import { VehicleInfoDisplay } from "./partials/view-vehicle";
 
 export const VehicleDataCol = (refect: any): ColumnDef<any>[] => {
@@ -157,6 +157,23 @@ export const VehicleDataCol = (refect: any): ColumnDef<any>[] => {
             refect();
           }
         }
+
+        const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+        async function handleDeleteVehicle() {
+          try {
+            const res = await deleteVehicle(axios, row.original.id);
+            if (res) {
+              toast.success("Vehicle deleted successfully");
+              refect();
+            }
+          } catch (error: any) {
+            toast.error(error?.message + " something went wrong");
+          } finally {
+            setDeleteDialogOpen(false);
+          }
+        }
+
         return (
           <div className="flex gap-3 justify-center  ">
             <Dialog>
@@ -191,6 +208,35 @@ export const VehicleDataCol = (refect: any): ColumnDef<any>[] => {
                   onSubmit={handleUpdateCustomer}
                   initialData={row.original}
                 />
+              </DialogContent>
+            </Dialog>
+            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+              <DialogTrigger asChild>
+                <button
+                  className="flex items-center p-1.5 bg-red-600 text-white rounded-sm"
+                  title="Delete Vehicle"
+                  onClick={() => setDeleteDialogOpen(true)}
+                >
+                  <Trash className="w-4 h-4" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="w-full max-w-xs md:max-w-md bg-white text-black">
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <div>Are you sure you want to delete this vehicle?</div>
+                <div className="mt-4 flex justify-end gap-2">
+                  <button
+                    className="px-4 py-2 bg-gray-300 rounded"
+                    onClick={() => setDeleteDialogOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-red-600 text-white rounded"
+                    onClick={handleDeleteVehicle}
+                  >
+                    Delete
+                  </button>
+                </div>
               </DialogContent>
             </Dialog>
           </div>

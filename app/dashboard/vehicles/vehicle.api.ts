@@ -39,3 +39,8 @@ export async function updateVehicle(
   });
   return res.data;
 }
+
+export async function deleteVehicle(axios: AxiosInstance, id: string) {
+  const res = await axios.delete(`/vehicles/delete?vehicleId=${id}`);
+  return res.data;
+}
