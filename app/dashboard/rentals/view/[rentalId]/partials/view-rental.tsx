@@ -90,7 +90,7 @@ export default function RentalsDetailView({
       {/* Header - More responsive with better spacing */}
       <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3">
         <h1 className="text-xl sm:text-2xl font-bold">Rental Details</h1>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex-wrap gap-2 hidden">
           <Button
             variant="outline"
             className="flex items-center text-xs sm:text-sm border-2 border-gray-700 gap-1 h-8 sm:h-9 px-2 sm:px-3"
